@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RedditApplication {
 
 	public static void main(String[] args) {
+		System.out.println("reddit clone");
 		SpringApplication.run(RedditApplication.class, args);
 	}
 
