@@ -1,6 +1,7 @@
 package com.manrason.reddit.service;
 
 import com.manrason.reddit.dto.RegisterRequest;
+import com.manrason.reddit.model.NotificationEmail;
 import com.manrason.reddit.model.User;
 import com.manrason.reddit.model.VerificationToken;
 import com.manrason.reddit.repository.UserRepository;
@@ -19,6 +20,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final MailService mailService;
 
     @Transactional
     public void signup(RegisterRequest registerRequest){
@@ -30,10 +32,13 @@ public class AuthService {
         user.setEnabled(false);
         userRepository.save(user);
 
-        String token = generateVerifiaionToken(user);
+        String token = generateVerificationToken(user);
+        mailService.sendMail(new NotificationEmail("Please Activate your Account",
+                user.getEmail(),"Click the url below to activate your account :" +
+                "http://localhost:8080/api/auth/accountVerification/" + token));
     }
 
-    private String generateVerifiaionToken(User user) {
+    private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
